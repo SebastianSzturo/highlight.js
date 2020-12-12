@@ -11,9 +11,18 @@ function(hljs) {
   var RUBY_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
   var RUBY_KEYWORDS = {
     keyword:
-      'and then defined module in return redo if BEGIN retry end for self when ' +
-      'next until do begin unless END rescue else break undef not super class case ' +
-      'require yield alias while ensure elsif or include attr_reader attr_writer attr_accessor',
+      'BEGIN END alias begin break case defined? do else elsif end ensure for if in next redo rescue raise ' +
+      'retry return super then undef unless until when while yield loop include extend raise alias_method attr ' +
+      'catch throw private module_function attr_reader attr_writer attr_accessor __id__ __send__ abort ancestors ' +
+      'at_exit caller const_defined? const_get const_missing const_set constants dup eval exec exit extend ' +
+      'fail fork format getc gets global_variables id included_modules inspect instance_eval ' +
+      'instance_method instance_methods instance_variable_get instance_variable_set instance_variables lambda load ' +
+      'local_variables loop method method_missing methods module_eval object_id open p print printf ' +
+      'private_class_method private_instance_methods private_methods proc protected_instance_methods ' +
+      'protected_methods public_class_method public_instance_methods public_methods putc puts raise rand ' +
+      'readline readlines require require_relative self send set_trace_func singleton_methods ' +
+      'sleep split sprintf srand sub syscall system taint test throw to_a to_s trace_var trap untaint untrace_var ' +
+      'warn class module def',
     literal:
       'true false nil'
   };
@@ -91,7 +100,10 @@ function(hljs) {
     IRB_OBJECT,
     {
       className: 'class',
-      beginKeywords: 'class module', end: '$|;',
+      variants: [
+        { beginKeywords: 'class module', end: '$|;', },
+        { begin: '[A-Z][a-zA-Z0-9_]*' },
+      ],
       illegal: /=/,
       contains: [
         hljs.inherit(hljs.TITLE_MODE, {begin: '[A-Za-z_]\\w*(::\\w+)*(\\?|\\!)?'}),
@@ -105,7 +117,10 @@ function(hljs) {
     },
     {
       className: 'function',
-      beginKeywords: 'def', end: '$|;',
+      variants: [
+        { beginKeywords: 'def', end: '$|;', },
+        { begin:'\\.\\w+' },
+      ],
       contains: [
         hljs.inherit(hljs.TITLE_MODE, {begin: RUBY_METHOD_RE}),
         PARAMS
@@ -132,6 +147,7 @@ function(hljs) {
       relevance: 0
     },
     {
+      className: 'variable',
       begin: '(\\$\\W)|((\\$|\\@\\@?)(\\w+))' // variables
     },
     {
